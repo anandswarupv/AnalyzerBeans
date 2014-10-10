@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -59,15 +59,20 @@ public class ServiceSessionTest extends TestCase {
         }
 
         assertEquals(threads.length, executionTimes.size());
+
         for (int i = 0; i < poolSize; i++) {
             // the first threads will take only some millis to run
-            assertTrue(executionTimes.get(i) < executionTimeMillis * 1.5);
+            final double executionTime = executionTimes.get(i).doubleValue();
+            final double marginValue = executionTimeMillis * 4;
+            assertTrue("executionTime=" + executionTime + ", should be less than " + marginValue,
+                    executionTime < marginValue);
         }
 
         // The last thread will have taken more time, because it has
         // to wait for the pool.
-        Long executionTimeForLastThread = executionTimes.get(poolSize);
-        assertTrue("Execution time for last thread: " + executionTimeForLastThread,
-                executionTimeForLastThread > executionTimeMillis * 1.8);
+        final Long executionTimeForLastThread = executionTimes.get(poolSize);
+        final double marginValue = executionTimeMillis * 1.1;
+        assertTrue("Execution time for last thread: " + executionTimeForLastThread + ", should be less than "
+                + marginValue, executionTimeForLastThread > marginValue);
     }
 }

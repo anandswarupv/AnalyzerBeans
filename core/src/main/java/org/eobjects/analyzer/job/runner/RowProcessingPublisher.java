@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -42,6 +42,8 @@ import org.apache.metamodel.util.Predicate;
 import org.eobjects.analyzer.beans.api.Analyzer;
 import org.eobjects.analyzer.beans.api.Filter;
 import org.eobjects.analyzer.beans.api.Transformer;
+import org.eobjects.analyzer.configuration.ContextAwareInjectionManager;
+import org.eobjects.analyzer.configuration.InjectionManager;
 import org.eobjects.analyzer.connection.Datastore;
 import org.eobjects.analyzer.connection.DatastoreConnection;
 import org.eobjects.analyzer.data.InputColumn;
@@ -501,7 +503,21 @@ public final class RowProcessingPublisher {
         final BeanConfiguration configuration = ((ConfigurableBeanJob<?>) componentJob).getConfiguration();
         final ComponentDescriptor<?> descriptor = componentJob.getDescriptor();
 
-        final LifeCycleHelper lifeCycleHelper = _publishers.getLifeCycleHelper();
+        // make a component-context specific injection manager
+        final LifeCycleHelper lifeCycleHelper;
+        {
+            final LifeCycleHelper outerLifeCycleHelper = _publishers.getLifeCycleHelper();
+            final boolean includeNonDistributedTasks = outerLifeCycleHelper.isIncludeNonDistributedTasks();
+            final AnalysisJob analysisJob = _publishers.getAnalysisJob();
+            final InjectionManager outerInjectionManager = outerLifeCycleHelper.getInjectionManager();
+            final ReferenceDataActivationManager referenceDataActivationManager = outerLifeCycleHelper
+                    .getReferenceDataActivationManager();
+            final ContextAwareInjectionManager injectionManager = new ContextAwareInjectionManager(
+                    outerInjectionManager, analysisJob, componentJob, _publishers.getAnalysisListener());
+
+            lifeCycleHelper = new LifeCycleHelper(injectionManager, referenceDataActivationManager,
+                    includeNonDistributedTasks);
+        }
 
         InitializeTask task = new InitializeTask(lifeCycleHelper, descriptor, component, configuration);
         return new TaskRunnable(task, listener);

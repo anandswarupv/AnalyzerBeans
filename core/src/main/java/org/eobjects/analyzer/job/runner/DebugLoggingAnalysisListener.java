@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  */
-public class DebugLoggingAnalysisListener implements AnalysisListener {
+public class DebugLoggingAnalysisListener extends AnalysisListenerAdaptor {
 
     private static final Logger logger = LoggerFactory.getLogger(DebugLoggingAnalysisListener.class);
 

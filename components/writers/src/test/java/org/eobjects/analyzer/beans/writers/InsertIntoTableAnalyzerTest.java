@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -25,6 +25,8 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.easymock.EasyMock;
+import org.eobjects.analyzer.beans.api.ComponentContext;
 import org.eobjects.analyzer.configuration.AnalyzerBeansConfiguration;
 import org.eobjects.analyzer.configuration.AnalyzerBeansConfigurationImpl;
 import org.eobjects.analyzer.connection.CsvDatastore;
@@ -156,6 +158,7 @@ public class InsertIntoTableAnalyzerTest extends TestCase {
         insertIntoTable.columnNames = new String[] { "foo", "bar" };
         insertIntoTable.errorHandlingOption = ErrorHandlingOption.SAVE_TO_FILE;
         insertIntoTable.errorLogFile = null;
+        insertIntoTable._componentContext = EasyMock.createMock(ComponentContext.class); 
 
         InputColumn<Object> col1 = new MockInputColumn<Object>("in1", Object.class);
         InputColumn<Object> col2 = new MockInputColumn<Object>("in2", Object.class);
@@ -205,6 +208,7 @@ public class InsertIntoTableAnalyzerTest extends TestCase {
         insertIntoTable.tableName = "test_table";
         insertIntoTable.columnNames = new String[] { "foo", "bar" };
         insertIntoTable.errorHandlingOption = ErrorHandlingOption.SAVE_TO_FILE;
+        insertIntoTable._componentContext = EasyMock.createMock(ComponentContext.class); 
 
         InputColumn<Object> col1 = new MockInputColumn<Object>("in1", Object.class);
         InputColumn<Object> col2 = new MockInputColumn<Object>("in2", Object.class);

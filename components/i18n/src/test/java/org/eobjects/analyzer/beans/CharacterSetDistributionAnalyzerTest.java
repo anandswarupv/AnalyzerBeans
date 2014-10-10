@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -78,9 +78,9 @@ public class CharacterSetDistributionAnalyzerTest extends TestCase {
 
 		analyzer.run(new MockInputRow().put(col1, "foobar").put(col2, "foobar"), 10);
 		analyzer.run(new MockInputRow().put(col1, "DåtåClænør"), 1);
-		analyzer.run(new MockInputRow().put(col1, "Данныечистого"), 1);
-		analyzer.run(new MockInputRow().put(col1, "數據清潔"), 1);
-		analyzer.run(new MockInputRow().put(col1, "بيانات الأنظف"), 1);
+        analyzer.run(new MockInputRow().put(col1, "Данныечистого"), 1);
+        analyzer.run(new MockInputRow().put(col1, "數據清潔"), 1);
+        analyzer.run(new MockInputRow().put(col1, "بيانات الأنظف"), 1);
 		analyzer.run(new MockInputRow().put(col1, "dữ liệu sạch hơn"), 1);
 
 		CharacterSetDistributionResult result = analyzer.getResult();

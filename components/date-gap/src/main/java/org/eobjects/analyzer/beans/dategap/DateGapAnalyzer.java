@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -83,14 +83,14 @@ public class DateGapAnalyzer implements Analyzer<DateGapAnalyzerResult> {
 			}
 
 			if (faultTolerantDateSwitch && from.compareTo(to) > 0) {
-				logger.info("Switching around from and to, because {} is higher than {} (row: {})", new Object[] { from, to,
+				logger.debug("Switching around from and to, because {} is higher than {} (row: {})", new Object[] { from, to,
 						row });
 				put(groupName, new TimeInterval(to, from));
 			} else {
 				put(groupName, new TimeInterval(from, to));
 			}
 		} else {
-			logger.info("Encountered row where from column or to column was null, ignoring");
+			logger.debug("Encountered row where from column or to column was null, ignoring");
 		}
 	}
 

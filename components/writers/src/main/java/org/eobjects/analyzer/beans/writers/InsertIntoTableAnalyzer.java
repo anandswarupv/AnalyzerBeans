@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -49,16 +49,19 @@ import org.eobjects.analyzer.beans.api.Analyzer;
 import org.eobjects.analyzer.beans.api.AnalyzerBean;
 import org.eobjects.analyzer.beans.api.Categorized;
 import org.eobjects.analyzer.beans.api.ColumnProperty;
+import org.eobjects.analyzer.beans.api.ComponentContext;
 import org.eobjects.analyzer.beans.api.Concurrent;
 import org.eobjects.analyzer.beans.api.Configured;
 import org.eobjects.analyzer.beans.api.Description;
+import org.eobjects.analyzer.beans.api.ExecutionLogMessage;
 import org.eobjects.analyzer.beans.api.FileProperty;
-import org.eobjects.analyzer.beans.api.Validate;
 import org.eobjects.analyzer.beans.api.FileProperty.FileAccessMode;
 import org.eobjects.analyzer.beans.api.Initialize;
 import org.eobjects.analyzer.beans.api.MappedProperty;
+import org.eobjects.analyzer.beans.api.Provided;
 import org.eobjects.analyzer.beans.api.SchemaProperty;
 import org.eobjects.analyzer.beans.api.TableProperty;
+import org.eobjects.analyzer.beans.api.Validate;
 import org.eobjects.analyzer.beans.convert.ConvertToBooleanTransformer;
 import org.eobjects.analyzer.beans.convert.ConvertToNumberTransformer;
 import org.eobjects.analyzer.connection.CsvDatastore;
@@ -139,6 +142,10 @@ public class InsertIntoTableAnalyzer implements Analyzer<WriteDataResult>, Actio
     @Configured(required = false)
     @Description("Additional values to write to error log")
     InputColumn<?>[] additionalErrorLogValues;
+
+    @Inject
+    @Provided
+    ComponentContext _componentContext;
 
     private Column[] _targetColumns;
     private WriteBuffer _writeBuffer;
@@ -430,6 +437,7 @@ public class InsertIntoTableAnalyzer implements Analyzer<WriteDataResult>, Actio
             dc.executeUpdate(new BatchUpdateScript() {
                 @Override
                 public void run(UpdateCallback callback) {
+                    int insertCount = 0;
                     for (Object[] rowData : buffer) {
                         RowInsertionBuilder insertBuilder = callback.insertInto(columns[0].getTable());
                         for (int i = 0; i < columns.length; i++) {
@@ -442,14 +450,22 @@ public class InsertIntoTableAnalyzer implements Analyzer<WriteDataResult>, Actio
 
                         try {
                             insertBuilder.execute();
+                            insertCount++;
                             _writtenRowCount.incrementAndGet();
                         } catch (final RuntimeException e) {
                             errorOccurred(rowData, e);
                         }
                     }
+
+                    if (insertCount > 0) {
+                        _componentContext.publishMessage(new ExecutionLogMessage(insertCount
+                                + " inserts executed"));
+                    }
                 }
             });
+
         } finally {
+
             con.close();
         }
     }

@@ -1,6 +1,6 @@
 /**
- * eobjects.org AnalyzerBeans
- * Copyright (C) 2010 eobjects.org
+ * AnalyzerBeans
+ * Copyright (C) 2014 Neopost - Customer Information Management
  *
  * This copyrighted material is made available to anyone wishing to use, modify,
  * copy, or redistribute it subject to the terms and conditions of the GNU
@@ -97,6 +97,18 @@ public final class LifeCycleHelper {
         _injectionManager = injectionManager;
         _referenceDataActivationManager = referenceDataActivationManager;
         _includeNonDistributedTasks = includeNonDistributedTasks;
+    }
+    
+    public boolean isIncludeNonDistributedTasks() {
+        return _includeNonDistributedTasks;
+    }
+    
+    public InjectionManager getInjectionManager() {
+        return _injectionManager;
+    }
+    
+    public ReferenceDataActivationManager getReferenceDataActivationManager() {
+        return _referenceDataActivationManager;
     }
 
     /**
